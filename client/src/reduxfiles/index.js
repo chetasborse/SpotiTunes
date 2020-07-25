@@ -1,0 +1,1 @@
+export { GET_ACCESS_TOKEN } from './user/userType'
