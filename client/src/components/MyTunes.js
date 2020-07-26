@@ -7,6 +7,7 @@ import {Col, Row, Button} from 'reactstrap'
 import './MyTunes.css'
 import IndiPlaylist from './IndiPlaylist';
 import { setSong } from '../reduxfiles/song/songActions';
+import Album from './Album';
  
 class MyTunes extends Component {
 
@@ -112,7 +113,7 @@ class MyTunes extends Component {
                         <Button color="warning" onClick={() => this.props.setSong(individual.track.preview_url)}>Play</Button>
                     </Col>
                     <Col>
-                        <IndiPlaylist url={individual.track.album.href} titlePlaylist={individual.track.album.name} id={individual.id} stats="album"/>
+                        <Album url={individual.track.album.href} titlePlaylist={individual.track.album.name} id={individual.id} stats="album"/>
                     </Col>
                 </Row>
             </div>

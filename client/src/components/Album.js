@@ -13,11 +13,9 @@ import {
     Row,
     Spinner
 } from 'reactstrap'
-import Player from './Player'
 import { setSong } from '../reduxfiles/song/songActions'
-import Album from './Album'
 
-class IndiPlaylist extends Component {
+class Album extends Component {
     constructor() {
         super()
         this.state = {
@@ -25,7 +23,8 @@ class IndiPlaylist extends Component {
             songs: [],
             isLoading: true,
             url: '',
-            url2: ''
+            albumname: '',
+            albumimage: ''
         }   
     }
 
@@ -37,7 +36,7 @@ class IndiPlaylist extends Component {
     }
 
     componentDidUpdate(prevState, prevProps) {
-        if(prevProps.url !== this.props.url) {
+        if(prevProps.url !== this.props.url) { 
             const url = this.props.url
             axios.get(url, {
                 headers: {
@@ -46,9 +45,11 @@ class IndiPlaylist extends Component {
             })
             .then(response => {
                 this.setState({
-                    songs: response.data.items,
+                    songs: response.data.tracks.items,
+                    albumname:response.data.name,
+                    albumimage:response.data.images ? response.data.images[1].url: '',
                     isLoading: false,
-                    msg: ''
+                    msg: '',
                 })
             })
             .catch(err => {
@@ -56,7 +57,7 @@ class IndiPlaylist extends Component {
                     msg: '',
                     isLoading: false
                 })
-            })
+            })   
         }
     }
 
@@ -64,9 +65,10 @@ class IndiPlaylist extends Component {
 
         return (
             <div>
-                <Button onClick={this.toggle} color="danger">View Playlist</Button>
+                <Button onClick={this.toggle} color="danger">View Album</Button>
                 <Modal isOpen={this.state.modal} toggle={this.toggle} scrollable="true">
-                    <ModalHeader className="titleModal"> {this.props.titlePlaylist}</ModalHeader>
+                    <ModalHeader className="titleModal">Album: {this.state.albumname}</ModalHeader>
+                    {this.state.albumimage ? <ModalHeader className="titleModal"><img style={{height: '200px'}} src={this.state.albumimage}></img></ModalHeader> : null}
                     <ModalBody>
                         <ListGroup>
                             {   this.state.msg ? 
@@ -74,22 +76,19 @@ class IndiPlaylist extends Component {
                                 this.state.isLoading ?
                                 <Spinner size="sm" color="primary" />:
                                 this.state.songs.map(indi => 
-                                    <ListGroupItem key={indi.track.id} className="playlistcar" style={{background: '#444'}}>
+                                    <ListGroupItem key={indi.id} className="playlistcar" style={{background: '#444'}}>
                                         <Row>
-                                            <Col xs="auto"><img className="imgSize" src={indi.track.album.images[1].url}></img></Col>
                                             <Col>
-                                                <p className="songContents" onClick= {() => this.getalbum(indi.track.album.href, indi.track.album.id, this.props.id)}>Album: {indi.track.album.name}</p>
                                                 {/* { this.state.albumid === individual.id && this.state.albumid1 === indi.track.album.id ? <Sample2 url={this.state.albumurl} token={this.state.userAccessToken}></Sample2> : null} */}
-                                                <p className="songContents">Song: {indi.track.name}</p>
-                                                <p className="songContents">Artist: {indi.track.album.artists[0].name}</p>
+                                                <p className="songContents">Song: {indi.name}</p>
+                                            </Col>
+                                            <Col>
+                                                <p className="songContents">Artist: {indi.artists[0].name}</p>
                                             </Col>                                       
                                         </Row>
                                         <Row>
                                             <Col>
-                                            <Button color="warning" onClick={() => this.props.setSong(indi.track.preview_url)}>Play</Button>
-                                            </Col>
-                                            <Col>
-                                                <Album url={indi.track.album.href} id={indi.id} stats="album"/>
+                                            <Button color="warning" onClick={() => this.props.setSong(indi.preview_url)}>Play</Button>
                                             </Col>
                                         </Row>
                                     </ListGroupItem>)
@@ -117,4 +116,4 @@ const mapDispatchtoProps = (dispatch) => {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchtoProps)(IndiPlaylist)
+export default connect(mapStateToProps, mapDispatchtoProps)(Album)
