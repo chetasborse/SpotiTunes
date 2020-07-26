@@ -6,7 +6,7 @@ function Login() {
     return(
 
            
-            <Container className="cont" style={{backgroundColor: '#222'}}>
+            <div className="cont" style={{backgroundColor: '#222'}}>
              <div class="container">
             <h4 className="heads">Welcome to SpotiTunes</h4>
             </div>
@@ -30,7 +30,7 @@ function Login() {
             <div class="container">
             <h4 className="heads3">A web client based on APIs from Spotify</h4>
             </div>
-            </Container>
+            </div>
             
     )
 }

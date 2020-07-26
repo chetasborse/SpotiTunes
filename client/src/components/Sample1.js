@@ -3,6 +3,10 @@ import queryString from 'query-string'
 import Sample2 from './Sample2'
 import {NavLink, Route} from 'react-router-dom'
 import Player from './Player'
+import {connect} from "react-redux"
+import axios from 'axios'
+import ItemsCarousel from 'react-items-carousel';
+import range from 'lodash/range';
 
 class Sample1 extends Component {
 
@@ -17,34 +21,34 @@ class Sample1 extends Component {
             albumid1: '',
             albumurl: '',
             userAccessToken: '',
-            loggedIn: false
+            loggedIn: false,
+            activeItemIndex: 0,
+            children: []
         }
     }
 
     componentDidMount() {
-        let parsed = queryString.parse(window.location.search)
-        let access_token = parsed.access_token
         this.setState({
-            userAccessToken: access_token
+            userAccessToken: this.props.token
         })
         
-        if(access_token) {
-        fetch("https://api.spotify.com/v1/me/playlists", {
-            method: "GET",
+        if(this.props.token) {
+        axios.get("https://api.spotify.com/v1/me/playlists", {
             headers: {
-                Authorization: `Bearer ${access_token}`     
+                Authorization: `Bearer ${this.props.token}`     
             }
             })
         .then(response => {
-            response.json()
-                .then(data => {
-                    console.log(data)
+            // response.json()
+            //     .then(data => {
+            //         console.log(data)
                     this.setState({
-                        data1: data.items,
-                        loggedIn: !this.state.loggedIn
+                        data1: response.data.items,
+                        loggedIn: !this.state.loggedIn,
+                        activeItemIndex: 0,
                     })
 
-                })
+                // })
             
             
         })
@@ -87,6 +91,8 @@ class Sample1 extends Component {
         })
     }
 
+    changeActiveItem = (activeItemIndex) => this.setState({ activeItemIndex });
+
     getalbum = (url, id1, id) => {
         this.setState({
             albumurl: url,
@@ -96,61 +102,57 @@ class Sample1 extends Component {
         // console.log(url)
     }
 
-    // componentDidUpdate(prevState) {
-
-    //     if(prevState.userAccessToken != queryString.parse(window.location.search).access_token) {
-    //         let parsed = queryString.parse(window.location.search)
-    //         let access_token = parsed.access_token
-    //         this.setState({
-    //             userAccessToken: access_token
-    //         })
-            
-
-    //         fetch("https://api.spotify.com/v1/me/playlists", {
-    //             method: "GET",
-    //             headers: {
-    //                 Authorization: `Bearer ${access_token}`     
-    //             }
-    //             })
-    //         .then(response => {
-    //             response.json()
-    //                 .then(data => {
-    //                     console.log(data)
-    //                     this.setState({
-    //                         data1: data.items
-    //                     })
-    //                 })
-                
-                
-    //         })
-    //         .catch(err => console.log('Error occ'))
-    //     }
-    // }
-
     render() {
+        const exer = this.state.data1.map(individual => 
+            <div key={individual.id}>
+                <p>{individual.name}</p>
+                { individual.images[1] !== undefined ? <img src={individual.images[1].url}></img> : null }
+                <p>No. of Tracks: {individual.tracks.total}</p>
+                <button onClick={() => this.seturl(individual.tracks.href, individual.id)}>Checkout</button>
+                { (this.state.data2 && this.state.id === individual.id) ? 
+                    this.state.data2.map(indi => 
+                    <div key={indi.track.id}>
+                        <img src={indi.track.album.images[2].url}></img>
+                        <p onClick= {() => this.getalbum(indi.track.album.href, indi.track.album.id, individual.id)}>{indi.track.album.name}</p>
+                        { this.state.albumid === individual.id && this.state.albumid1 === indi.track.album.id ? <Sample2 url={this.state.albumurl} token={this.state.userAccessToken}></Sample2> : null}
+                        <p>Song: {indi.track.name}</p>
+                        <p>Artist: {indi.track.album.artists[0].name}</p>
+                    </div>) : null
+                }
+            </div>)
+
         return(
-            <div >        
+            <div className="toplookout">        
                 { this.state.userAccessToken ?
-                <div>{this.state.data1.map(individual => 
-                    <div key={individual.id}>
-                        <p>{individual.name}</p>
-                        { individual.images[1] !== undefined ? <img src={individual.images[1].url}></img> : null }
-                        <p>No. of Tracks: {individual.tracks.total}</p>
-                        <button onClick={() => this.seturl(individual.tracks.href, individual.id)}>Checkout</button>
-                        { (this.state.data2 && this.state.id === individual.id) ? 
-                            this.state.data2.map(indi => 
-                            <div key={indi.track.id}>
-                                <img src={indi.track.album.images[2].url}></img>
-                                <p onClick= {() => this.getalbum(indi.track.album.href, indi.track.album.id, individual.id)}>{indi.track.album.name}</p>
-                                { this.state.albumid === individual.id && this.state.albumid1 === indi.track.album.id ? <Sample2 url={this.state.albumurl} token={this.state.userAccessToken}></Sample2> : null}
-                                <p>Song: {indi.track.name}</p>
-                                <p>Artist: {indi.track.album.artists[0].name}</p>
-                            </div>) : null
-                        }
-                    </div>)}
+                <div>
+
+<ItemsCarousel
+        // Placeholder configurations
+        enablePlaceholder
+        numberOfPlaceholderItems={5}
+
+        // Carousel configurations
+        numberOfCards={2}
+        gutter={12}
+        showSlither={true}
+        firstAndLastGutter={true}
+        freeScrolling={true}
+
+        // Active item configurations
+        requestToChangeActive={this.changeActiveItem}
+        activeItemIndex={this.state.activeItemIndex}
+        activePosition={'center'}
+
+        chevronWidth={24}
+        rightChevron={'>'}
+        leftChevron={'<'}
+        outsideChevron={false}
+      >
+        {exer}
+      </ItemsCarousel>
+
                 </div> : null
                 }
-
 
                 {/* {   this.state.userAccessToken ?
                     <SpotifyPlayer
@@ -164,4 +166,10 @@ class Sample1 extends Component {
     }
 }
 
-export default Sample1
+const mapStateToProps = (state) => {
+    return {
+        token : state.user.userAccessToken
+    }
+}
+
+export default connect(mapStateToProps)(Sample1)

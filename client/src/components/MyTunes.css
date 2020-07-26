@@ -1,0 +1,46 @@
+.playlistcar {
+    background-color: #444;
+    padding: 10px;
+    color: white;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.playlistcar:hover {
+    background-color: #444;
+    padding: 20px;
+    color: white;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.6), 0 6px 20px 0 rgba(0, 0, 0, 0.59);
+    margin-bottom: 10px;
+}
+
+.playlisttitle {
+    text-align: center;
+    font-size: 20px;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.playlistcontents {
+    text-align: center;
+}
+
+.titleModal {
+    margin: 0 auto;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.imgSize{
+    height: 100px;
+}
+
+.songContents{
+    font-size: 12px;
+    text-align: left;
+}
+
+.playListHead{
+    margin-top: 15px;
+    margin-left: 30px;
+    padding: 10px;
+}

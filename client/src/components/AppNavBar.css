@@ -1,0 +1,31 @@
+.linkclass {
+    margin: 10px;
+    padding-top: 20px;
+    color: whitesmoke;
+    font-size: 15px;
+}
+
+.linkclass:hover {
+    color:whitesmoke;
+    font-size: 16px; 
+}
+
+.linkclass1 {
+    margin: 0px;
+    color: whitesmoke;
+    font-size: 15px;
+}
+
+.linkclass1:hover {
+    color:whitesmoke;
+    font-size: 16px; 
+}
+
+.profileimage {
+    height: 350px;
+    margin-bottom: 20px;
+}
+
+.toplookout {
+    margin-top: 60px;
+}

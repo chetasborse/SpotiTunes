@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
+import { BrowserRouter as Router, Route, Switch, Link, useRouteMatch, useParams } from 'react-router-dom';
+import './AppNavBar.css'
 import {
     Collapse,
     Navbar,
@@ -11,6 +13,9 @@ import {
     Container
 } from 'reactstrap';
 import Sample1 from './Sample1';
+import HomePage from './HomePage';
+import ProfilePage from './ProfilePage';
+import MyTunes from './MyTunes';
 
 
 class AppNavBar extends Component {
@@ -30,32 +35,49 @@ class AppNavBar extends Component {
 
     render() {
         return(
-        <Navbar color="dark" dark expand="sm" className="mb-5">
+            <Router>
+        <Navbar color="dark" dark expand="sm" className="mb-5" fixed="top">
             <Container>
-                <NavbarBrand href="/">Shopping List</NavbarBrand>
+                <NavbarBrand>SpotiTunes</NavbarBrand>
                 <NavbarToggler onClick={this.toggle} />
                 <Collapse isOpen={this.state.isOpen} navbar>
-                    <Nav className="ml-auto" navbar>
-                        <NavItem>
-                            <NavLink href="https://github.com/chetasborse">GitHub</NavLink>
-                        </NavItem>
-                        {  ! this.props.isAuthenticated ?
-                            (<React.Fragment>
-                                <NavItem>
-                                    <Sample1 ></Sample1>
-                                </NavItem>
-                            </React.Fragment>) :
-                            (
-                                <NavItem>
-                                    <h2>logOut</h2>
-                                </NavItem>
-                            )
-                        }   
-                        
-                    </Nav>
-                </Collapse>
+                    
+                        <Nav className="ml-auto" navbar>
+                            <NavItem>
+                                <NavLink href="https://github.com/chetasborse">GitHub</NavLink>
+                            </NavItem> 
+                            <NavItem>
+                                <Link className="linkclass" to="/">Home</Link>
+                            </NavItem>
+                            <NavItem>
+                                <ProfilePage />
+                            </NavItem>
+                            <NavItem>
+                                <Link className="linkclass" to="/MyTunes">MyTunes</Link>
+                            </NavItem>
+                            <NavItem>
+                                <NavLink href="/">LogOut</NavLink>
+                            </NavItem>
+                            
+                        </Nav> 
+                        </Collapse>
             </Container>
         </Navbar>
+
+                        <Switch>
+
+                            <Route path="/MyTunes">
+                                <HomePage />
+                            </Route>
+                            <Route path="/">
+                                <MyTunes />
+                                
+                            </Route>
+
+                        </Switch>  
+                    
+                
+        </Router>
         )
     }
 }

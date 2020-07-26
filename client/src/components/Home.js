@@ -8,6 +8,7 @@ import Sample2 from './Sample2';
 import { getAccessToken } from '../reduxfiles/user/userActions';
 import queryString from 'query-string'
 import AppNavBar from './AppNavBar';
+import Player from './Player';
 
 
 
@@ -49,7 +50,14 @@ class Home extends Component{
         }
         {
           this.state.isLoggedIn ?
-            <AppNavBar />
+            <React.Fragment>
+              <AppNavBar />
+              <div className="player">
+                <Player url={this.props.songurl}/>
+              </div>
+              
+            </React.Fragment>
+            
     //     <Router>
     //         <div>
     //     <nav>
@@ -98,13 +106,14 @@ class Home extends Component{
 const mapStatetoProps = (state) => {
   return {
     isLoggedIn: state.user.isLoggedIn,
-    token: state.user.userAccessToken
+    token: state.user.userAccessToken,
+    songurl: state.song.songurl
   }
 }
 
 const mapDispatchtoProps = (dispatch) => {
     return {
-        settoken: (token) => dispatch(getAccessToken(token)) 
+        settoken: (token) => dispatch(getAccessToken(token))
     }
 }
 
