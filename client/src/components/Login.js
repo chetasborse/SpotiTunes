@@ -29,6 +29,7 @@ function Login() {
             </div>
             <div class="container">
             <h4 className="heads3">A web client based on APIs from Spotify</h4>
+            <h6 className="heads4">Note: In this version only previews of songs are available</h6>
             </div>
             </div>
             

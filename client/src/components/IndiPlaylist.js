@@ -14,7 +14,7 @@ import {
     Spinner
 } from 'reactstrap'
 import Player from './Player'
-import { setSong } from '../reduxfiles/song/songActions'
+import { setSong, addSong } from '../reduxfiles/song/songActions'
 import Album from './Album'
 
 class IndiPlaylist extends Component {
@@ -60,6 +60,11 @@ class IndiPlaylist extends Component {
         }
     }
 
+    seturl = (item) => {
+        if(item.preview_url)
+            this.props.setSong(item)
+    }
+
     render() {
 
         return (
@@ -69,8 +74,7 @@ class IndiPlaylist extends Component {
                     <ModalHeader className="titleModal"> {this.props.titlePlaylist}</ModalHeader>
                     <ModalBody>
                         <ListGroup>
-                            {   this.state.msg ? 
-                                <h3>{this.state.msg}</h3> :
+                            {   
                                 this.state.isLoading ?
                                 <Spinner size="sm" color="primary" />:
                                 this.state.songs.map(indi => 
@@ -78,15 +82,14 @@ class IndiPlaylist extends Component {
                                         <Row>
                                             <Col xs="auto"><img className="imgSize" src={indi.track.album.images[1].url}></img></Col>
                                             <Col>
-                                                <p className="songContents" onClick= {() => this.getalbum(indi.track.album.href, indi.track.album.id, this.props.id)}>Album: {indi.track.album.name}</p>
-                                                {/* { this.state.albumid === individual.id && this.state.albumid1 === indi.track.album.id ? <Sample2 url={this.state.albumurl} token={this.state.userAccessToken}></Sample2> : null} */}
+                                                <p className="songContents">Album: {indi.track.album.name}</p>
                                                 <p className="songContents">Song: {indi.track.name}</p>
                                                 <p className="songContents">Artist: {indi.track.album.artists[0].name}</p>
                                             </Col>                                       
                                         </Row>
                                         <Row>
                                             <Col>
-                                            <Button color="warning" onClick={() => this.props.setSong(indi.track.preview_url)}>Play</Button>
+                                            <Button color="warning" onClick={() => this.seturl({preview_url: indi.track.preview_url, album: indi.track.album.name, song: indi.track.name, image: indi.track.album.images[1].url})}>Play</Button>
                                             </Col>
                                             <Col>
                                                 <Album url={indi.track.album.href} id={indi.id} stats="album"/>
@@ -113,7 +116,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchtoProps = (dispatch) => {
     return {
-        setSong : (url) => dispatch(setSong(url))
+        setSong : (url) => dispatch(setSong(url)),
+        // addSong: (item) => dispatch(addSong(item))
     }
 }
 

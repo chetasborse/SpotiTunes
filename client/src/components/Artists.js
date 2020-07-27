@@ -2,29 +2,33 @@ import React, {Component} from 'react'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import './AppNavBar.css'
+
 import {
     Modal,
     ModalHeader,
     ModalBody,
+    Label,
+    NavLink,
     Button,
-    ListGroup,
-    ListGroupItem,
     Col,
     Row,
+    ListGroup,
+    ListGroupItem,
     Spinner
 } from 'reactstrap'
 import { setSong } from '../reduxfiles/song/songActions'
+import Album from './Album'
 
-class Album extends Component {
-    constructor() {
-        super()
+class Artists extends Component {
+    constructor(props) {
+        super(props)
         this.state = {
             modal: false,
-            songs: [],
-            isLoading: true,
-            url: '',
-            albumname: '',
-            albumimage: ''
+            userData: {},
+            songs:[],
+            artist_name: '',
+            artistimage: '',
+            isLoading: true
         }   
     }
 
@@ -36,8 +40,8 @@ class Album extends Component {
     }
 
     componentDidUpdate(prevState, prevProps) {
-        if(prevProps.url !== this.props.url) { 
-            const url = this.props.url
+        if(prevProps.artist_id !== this.props.artist_id) { 
+            const url = `https://api.spotify.com/v1/artists/${this.props.artist_id}/top-tracks?country=IN`
             axios.get(url, {
                 headers: {
                     Authorization: `Bearer ${this.props.token}`
@@ -45,9 +49,9 @@ class Album extends Component {
             })
             .then(response => {
                 this.setState({
-                    songs: response.data.tracks.items,
-                    albumname:response.data.name,
-                    albumimage:response.data.images ? response.data.images[1].url: '',
+                    songs: response.data.tracks,
+                    artist_name: this.props.artist_name,
+                    artistimage : this.props.artist_image ? this.props.artist_image: '',
                     isLoading: false,
                     msg: '',
                 })
@@ -70,40 +74,43 @@ class Album extends Component {
 
         return (
             <div>
-                <Button onClick={this.toggle} color="danger">View Album</Button>
+                <Button onClick={this.toggle} color="warning">{this.props.artist_name}</Button>
                 <Modal isOpen={this.state.modal} toggle={this.toggle} scrollable="true">
-                    <ModalHeader className="titleModal">Album: {this.state.albumname}</ModalHeader>
-                    {this.state.albumimage ? <ModalHeader className="titleModal"><img style={{height: '200px'}} src={this.state.albumimage}></img></ModalHeader> : null}
+                    <ModalHeader className="titleModal">{this.props.artist_name}</ModalHeader>
+                    {this.props.artist_image ? <ModalHeader className="titleModal"><img style={{height: '200px'}} src={this.props.artist_image}></img></ModalHeader> : null}
                     <ModalBody>
-                        <ListGroup>
+                    <ListGroup>
                             {   this.state.msg ? 
                                 <h3>{this.state.msg}</h3> :
                                 this.state.isLoading ?
                                 <Spinner size="sm" color="primary" />:
                                 this.state.songs.map(indi => 
                                     <ListGroupItem key={indi.id} className="playlistcar" style={{background: '#444'}}>
+
                                         <Row>
+                                            <Col xs="auto"><img className="imgSize" src={indi.album.images[1].url}></img></Col>
                                             <Col>
-                                                {/* { this.state.albumid === individual.id && this.state.albumid1 === indi.track.album.id ? <Sample2 url={this.state.albumurl} token={this.state.userAccessToken}></Sample2> : null} */}
+                                                <p className="songContents">Album: {indi.album.name}</p>
                                                 <p className="songContents">Song: {indi.name}</p>
-                                            </Col>
-                                            <Col>
-                                                <p className="songContents">Artist: {indi.artists[0].name}</p>
                                             </Col>                                       
                                         </Row>
                                         <div style={{marginTop: '10px'}}>
                                         <Row>
                                             <Col>
-                                            <Button color="warning" onClick={() => this.seturl({preview_url: indi.preview_url, album: this.state.albumname, song: indi.name, image: this.state.albumimage})}>Play</Button>
+                                            <Button color="warning" onClick={() => this.seturl({preview_url: indi.preview_url, album: indi.album.name, song: indi.name, image: indi.album.images[1].url})}>Play</Button>
+                                            </Col>
+                                            <Col>
+                                                <Album url={indi.album.href} id={indi.id} stats="album"/>
                                             </Col>
                                         </Row>
                                         </div>
+
                                     </ListGroupItem>)
                             }  
-                        </ListGroup> 
-                    </ModalBody>
-                    {/* <Player url={this.state.url2} /> */}
+                        </ListGroup>
+                    </ModalBody> 
                     <Button color="danger" onClick={this.toggle}>Back</Button>
+                    
                 </Modal>
             </div>
         )
@@ -112,8 +119,7 @@ class Album extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        token: state.user.userAccessToken,
-        url2: state.song.songurl
+        token: state.user.userAccessToken
     }
 }
 
@@ -123,4 +129,4 @@ const mapDispatchtoProps = (dispatch) => {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchtoProps)(Album)
+export default connect(mapStateToProps, mapDispatchtoProps)(Artists)

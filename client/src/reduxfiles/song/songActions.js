@@ -1,8 +1,12 @@
-import { SET_SONG } from "./songType"
+import { SET_SONG, ADD_SONG, ARTIST_MODAL } from "./songType"
 
-export const setSong = (url) => {
-    return {
+export const setSong = (item) => dispatch => {
+    dispatch({
         type: SET_SONG,
-        payload: url
-    }
+        payload: item.preview_url
+    })
+    dispatch({
+        type: ADD_SONG,
+        payload: item
+    })
 } 

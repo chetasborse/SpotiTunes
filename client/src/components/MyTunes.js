@@ -19,6 +19,7 @@ class MyTunes extends Component {
             errmsgplaylist: '',
             activeItemIndex: 0,
             activeItemIndex1: 0,
+            activeItemIndex2: 0,
             currentPlaylist: '',
             recentlyplayed: [],
             errmsgrecently:''
@@ -62,6 +63,12 @@ class MyTunes extends Component {
 
     changeActiveItem = (activeItemIndex) => this.setState({ activeItemIndex });
     changeActiveItem1 = (activeItemIndex1) => this.setState({ activeItemIndex1 });
+    changeActiveItem2 = (activeItemIndex2) => this.setState({ activeItemIndex2 });
+
+    seturl = (item) => {
+        if(item.preview_url)
+            this.props.setSong(item)
+    }
 
     render() {
 
@@ -96,7 +103,7 @@ class MyTunes extends Component {
             <div className="playlistcar" key={individual.track.id}>
                 <Row>
                     <Col>
-                        <img style={{height: '120px'}} src={individual.track.album.images[1].url}></img>
+                        <img style={{height: '200px'}} src={individual.track.album.images[1].url}></img>
                     </Col>
                 </Row>
                 <Row>
@@ -110,7 +117,7 @@ class MyTunes extends Component {
                 </Row>
                 <Row>
                     <Col>
-                        <Button color="warning" onClick={() => this.props.setSong(individual.track.preview_url)}>Play</Button>
+                        <Button color="warning" onClick={() => this.seturl({preview_url: individual.track.preview_url, album: individual.track.album.name, song: individual.track.name, image: individual.track.album.images[1].url})}>Play</Button>
                     </Col>
                     <Col>
                         <Album url={individual.track.album.href} titlePlaylist={individual.track.album.name} id={individual.id} stats="album"/>
@@ -119,9 +126,37 @@ class MyTunes extends Component {
             </div>
             )
 
+            const recentlypreviewed = this.props.songspreviewed.map(individual =>
+                <div className="playlistcar" key={individual.id}>
+                    <Row>
+                        <Col>
+                            <img style={{height: '200px'}} src={individual.image}></img>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col><p className="playlisttitle">{individual.song}</p></Col>
+                    </Row>
+                    {/* <Row>
+                        <Col><p className="songContents" style={{textAlign:'center'}}>Artist: {individual.track.album.artists[0].name}</p></Col>
+                    </Row> */}
+                    <Row>
+                        <Col><p className="songContents" style={{textAlign:'center'}}>Album: {individual.album}</p></Col>
+                    </Row>
+                    <Row>
+                        <Col>
+                            <Button color="warning" onClick={() => this.props.setSong({preview_url: individual.preview_url, album: individual.album, song: individual.song, image: individual.image})}>Play</Button>
+                        </Col>
+                        {/* <Col>
+                            <Album url={individual.track.album.href} titlePlaylist={individual.track.album.name} id={individual.id} stats="album"/>
+                        </Col> */}
+                    </Row>
+                </div>
+                )
+
+
         return(
             <div className="toplookout">
-                <div>
+                <div style={{backgroundColor: '#b6e7fd'}}>
                 <h4 className="playListHead">My PlayLists</h4>
                 {
                     this.props.token ? 
@@ -149,11 +184,11 @@ class MyTunes extends Component {
                 <h4 className="playListHead">Recently Played</h4>
                 {
                     this.props.token ? 
-                    <div style={{marginBottom: '100px'}}>
+                    <div>
                     <ItemsCarousel
                         enablePlaceholder
                         numberOfPlaceholderItems={5}
-                        numberOfCards={5}
+                        numberOfCards={4}
                         gutter={12}
                         showSlither={true}
                         firstAndLastGutter={true}
@@ -171,6 +206,33 @@ class MyTunes extends Component {
                     </div>
                     : null
                 }
+
+                { this.props.songspreviewed.length != 0 ? <h4 className="playListHead">Recently Previewed</h4>: null}
+                {
+                    this.props.token ? 
+                    <div>
+                    <ItemsCarousel
+                        enablePlaceholder
+                        numberOfPlaceholderItems={5}
+                        numberOfCards={5}
+                        gutter={12}
+                        showSlither={true}
+                        firstAndLastGutter={true}
+                        freeScrolling={true}
+                        requestToChangeActive={this.changeActiveItem2}
+                        activeItemIndex={this.state.activeItemIndex2}
+                        activePosition={'center'}
+                        chevronWidth={24}
+                        rightChevron={'>'}
+                        leftChevron={'<'}
+                        outsideChevron={false}
+                    >
+                        {recentlypreviewed}
+                    </ItemsCarousel>
+                    </div>
+                    : null
+                }
+
                 </div>
             </div>
         )
@@ -180,6 +242,7 @@ class MyTunes extends Component {
 const mapStatetoProps = (state) => {
     return {
         token: state.user.userAccessToken,
+        songspreviewed: state.song.songsPreviewed
     }
 }
 

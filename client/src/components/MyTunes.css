@@ -1,15 +1,16 @@
 .playlistcar {
     background-color: #444;
-    padding: 10px;
+    padding: 20px;
     color: white;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     text-align: center;
     margin-bottom: 10px;
+    transition: 0.3s;
 }
 
 .playlistcar:hover {
     background-color: #444;
-    padding: 20px;
+    padding: 30px;
     color: white;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.6), 0 6px 20px 0 rgba(0, 0, 0, 0.59);
     margin-bottom: 10px;
@@ -43,4 +44,5 @@
     margin-top: 15px;
     margin-left: 30px;
     padding: 10px;
+    color:#0c5970
 }

@@ -9,6 +9,7 @@ import { getAccessToken } from '../reduxfiles/user/userActions';
 import queryString from 'query-string'
 import AppNavBar from './AppNavBar';
 import Player from './Player';
+import CurrentSongInfo from './CurrentSongInfo';
 
 
 
@@ -27,11 +28,20 @@ class Home extends Component{
     let parsed = queryString.parse(window.location.search)
     let access_token = parsed.access_token
 
-      if(access_token)
-      this.setState({
+      if(access_token) {
+        localStorage.setItem('token', access_token)
+        this.setState({
+            token: access_token,
+            isLoggedIn: true
+        })
+     }
+      else{
+        access_token = localStorage.getItem('token') ? localStorage.getItem('token') : ''
+        this.setState({
           token: access_token,
-          isLoggedIn: true
+          isLoggedIn: access_token ? true : false
       })
+      }
   }
 
   sendData = (data) => {
@@ -53,6 +63,7 @@ class Home extends Component{
             <React.Fragment>
               <AppNavBar />
               <div className="player">
+                <CurrentSongInfo />
                 <Player url={this.props.songurl}/>
               </div>
               

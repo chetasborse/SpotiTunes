@@ -16,6 +16,7 @@ import Sample1 from './Sample1';
 import HomePage from './HomePage';
 import ProfilePage from './ProfilePage';
 import MyTunes from './MyTunes';
+import Search from './Search';
 
 
 class AppNavBar extends Component {
@@ -56,6 +57,9 @@ class AppNavBar extends Component {
                                 <Link className="linkclass" to="/MyTunes">MyTunes</Link>
                             </NavItem>
                             <NavItem>
+                                <Link className="linkclass" to="/Search">Search </Link>
+                            </NavItem>
+                            <NavItem>
                                 <NavLink href="/">LogOut</NavLink>
                             </NavItem>
                             
@@ -67,12 +71,17 @@ class AppNavBar extends Component {
                         <Switch>
 
                             <Route path="/MyTunes">
-                                <HomePage />
+                                <MyTunes />
+                            </Route>
+                                
+                            <Route path="/Search">
+                                <Search />
                             </Route>
                             <Route path="/">
-                                <MyTunes />
-                                
+                                <HomePage />                               
                             </Route>
+
+                            
 
                         </Switch>  
                     

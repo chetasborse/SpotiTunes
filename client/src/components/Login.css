@@ -38,6 +38,12 @@
   font-family: 'Courier New', Courier, monospace;
 }
 
+.heads4{ 
+  text-align: center;
+  color: white;
+  margin-top: 30px;
+}
+
 .view {
   top: 0;
   left: 0;
