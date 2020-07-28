@@ -64,6 +64,8 @@ class Album extends Component {
     seturl = (item) => {
         if(item.preview_url)
             this.props.setSong(item)
+        else
+            alert('No preview available')
     }
 
     render() {
@@ -76,8 +78,7 @@ class Album extends Component {
                     {this.state.albumimage ? <ModalHeader className="titleModal"><img style={{height: '200px'}} src={this.state.albumimage}></img></ModalHeader> : null}
                     <ModalBody>
                         <ListGroup>
-                            {   this.state.msg ? 
-                                <h3>{this.state.msg}</h3> :
+                            { 
                                 this.state.isLoading ?
                                 <Spinner size="sm" color="primary" />:
                                 this.state.songs.map(indi => 

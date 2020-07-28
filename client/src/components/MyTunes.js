@@ -2,8 +2,7 @@ import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import axios from 'axios'
 import ItemsCarousel from 'react-items-carousel';
-import Sample2 from './Sample2';
-import {Col, Row, Button} from 'reactstrap'
+import {Col, Row, Button, Spinner} from 'reactstrap'
 import './MyTunes.css'
 import IndiPlaylist from './IndiPlaylist';
 import { setSong } from '../reduxfiles/song/songActions';
@@ -22,7 +21,9 @@ class MyTunes extends Component {
             activeItemIndex2: 0,
             currentPlaylist: '',
             recentlyplayed: [],
-            errmsgrecently:''
+            errmsgrecently:'',
+            playlistsloading: false,
+            recentlyloading: true
         }
     }
 
@@ -34,27 +35,31 @@ class MyTunes extends Component {
         }
 
         if(this.props.token) {
-            axios.get("https://api.spotify.com/v1/me/playlists", config)
-            .then(response => {
-                this.setState({
-                    playlists: response.data.items
-                })
-            })
-            .catch(err => {
-                this.setState({
-                    errmsgplaylist: 'Unable to retrieve the playlist'
-                })
-            })
+            // axios.get("https://api.spotify.com/v1/me/playlists", config)
+            // .then(response => {
+            //     this.setState({
+            //         playlists: response.data.items,
+            //         playlistsloading: false
+            //     })
+            // })
+            // .catch(err => {
+            //     this.setState({
+            //         errmsgplaylist: 'Unable to retrieve the playlist',
+            //         playlistsloading: false
+            //     })
+            // })
 
             axios.get("https://api.spotify.com/v1/me/player/recently-played?limit=10", config)
             .then(response => {
                 this.setState({
-                    recentlyplayed: response.data.items
+                    recentlyplayed: response.data.items,
+                    recentlyloading: false
                 })
             })
             .catch(err => {
                 this.setState({
-                    errmsgrecently: 'Unable to retrieve the playlist'
+                    errmsgrecently: 'Unable to retrieve the playlist',
+                    recentlyloading: false
                 })
             })
 
@@ -68,11 +73,13 @@ class MyTunes extends Component {
     seturl = (item) => {
         if(item.preview_url)
             this.props.setSong(item)
+        else
+            alert('No preview available')
     }
 
     render() {
 
-        const playlists = this.state.playlists.map(individual => 
+        const playlists = this.props.myplaylist.map(individual => 
             <div className="playlistcar" key={individual.id}>
                 <Row>
                     <Col><p className="playlisttitle">{individual.name}</p></Col>
@@ -103,7 +110,7 @@ class MyTunes extends Component {
             <div className="playlistcar" key={individual.track.id}>
                 <Row>
                     <Col>
-                        <img style={{height: '200px'}} src={individual.track.album.images[1].url}></img>
+                        {individual.track.album.images ? <img style={{height: '200px'}} src={individual.track.album.images[1].url}></img> : null}
                     </Col>
                 </Row>
                 <Row>
@@ -130,7 +137,7 @@ class MyTunes extends Component {
                 <div className="playlistcar" key={individual.id}>
                     <Row>
                         <Col>
-                            <img style={{height: '200px'}} src={individual.image}></img>
+                            {individual.image ? <img style={{height: '200px'}} src={individual.image}></img> : null}
                         </Col>
                     </Row>
                     <Row>
@@ -160,7 +167,8 @@ class MyTunes extends Component {
                 <h4 className="playListHead">My PlayLists</h4>
                 {
                     this.props.token ? 
-
+                    this.state.playlistsloading ?
+                    <Spinner size="sm" color="primary" />:
                     <ItemsCarousel
                         enablePlaceholder
                         numberOfPlaceholderItems={5}
@@ -184,6 +192,8 @@ class MyTunes extends Component {
                 <h4 className="playListHead">Recently Played</h4>
                 {
                     this.props.token ? 
+                    this.state.recentlyloading ?
+                    <Spinner size="sm" color="primary" />:
                     <div>
                     <ItemsCarousel
                         enablePlaceholder
@@ -242,7 +252,8 @@ class MyTunes extends Component {
 const mapStatetoProps = (state) => {
     return {
         token: state.user.userAccessToken,
-        songspreviewed: state.song.songsPreviewed
+        songspreviewed: state.song.songsPreviewed,
+        myplaylist: state.song.myplaylist
     }
 }
 

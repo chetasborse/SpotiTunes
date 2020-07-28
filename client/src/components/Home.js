@@ -1,15 +1,14 @@
 import React, {Component} from 'react';
-import { BrowserRouter as Router, Route, Switch, Link, useRouteMatch, useParams } from 'react-router-dom';
 
-import Sample1 from './Sample1';
 import Login from './Login';
 import {connect} from 'react-redux'
-import Sample2 from './Sample2';
-import { getAccessToken } from '../reduxfiles/user/userActions';
+
+import { getAccessToken, getInfo } from '../reduxfiles/user/userActions';
 import queryString from 'query-string'
 import AppNavBar from './AppNavBar';
 import Player from './Player';
 import CurrentSongInfo from './CurrentSongInfo';
+import { getPlaylist } from '../reduxfiles/song/songActions';
 
 
 
@@ -30,6 +29,8 @@ class Home extends Component{
 
       if(access_token) {
         localStorage.setItem('token', access_token)
+        this.props.getplaylist()
+        this.props.getInfo()
         this.setState({
             token: access_token,
             isLoggedIn: true
@@ -37,6 +38,8 @@ class Home extends Component{
      }
       else{
         access_token = localStorage.getItem('token') ? localStorage.getItem('token') : ''
+        this.props.getplaylist()
+        this.props.getInfo()
         this.setState({
           token: access_token,
           isLoggedIn: access_token ? true : false
@@ -124,7 +127,9 @@ const mapStatetoProps = (state) => {
 
 const mapDispatchtoProps = (dispatch) => {
     return {
-        settoken: (token) => dispatch(getAccessToken(token))
+        settoken: (token) => dispatch(getAccessToken(token)),
+        getplaylist: () => dispatch(getPlaylist()),
+        getInfo: () => dispatch(getInfo())
     }
 }
 

@@ -18,7 +18,7 @@ class CurrentSongInfo extends Component {
             {   currentSong.song ?
                 <Row>
                     <Col xs="auto">
-                    <img style={{height: '60px'}} src={currentSong.image} />
+                    {currentSong.image ? <img style={{height: '60px'}} src={currentSong.image}/>: null}
                     </Col>
                     <Col>
                         <Row>

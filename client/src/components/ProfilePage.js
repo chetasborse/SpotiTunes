@@ -9,7 +9,9 @@ import {
     ModalBody,
     Label,
     NavLink,
-    Button
+    Button,
+    Col,
+    Row
 } from 'reactstrap'
 
 class ProfilePage extends Component {
@@ -29,25 +31,25 @@ class ProfilePage extends Component {
     }
 
     componentDidMount() {
-        axios.get('https://api.spotify.com/v1/me', {
-            headers: {
-                Authorization: `Bearer ${this.props.token}`
-            }
-        })
-        .then(response => {
-            this.setState({
-                userData: response.data
-            })
-        })
-        .catch(err => {
-            this.setState({
-                msg: 'Error in retrieving information'
-            })
-        })
+        // axios.get('https://api.spotify.com/v1/me', {
+        //     headers: {
+        //         Authorization: `Bearer ${this.props.token}`
+        //     }
+        // })
+        // .then(response => {
+        //     this.setState({
+        //         userData: response.data
+        //     })
+        // })
+        // .catch(err => {
+        //     this.setState({
+        //         msg: 'Error in retrieving information'
+        //     })
+        // })
     }
 
     render() {
-        const {userData} = this.state
+        const {userData} = this.props
         const num = 0
 
         return (
@@ -56,14 +58,15 @@ class ProfilePage extends Component {
                 <Modal isOpen={this.state.modal} toggle={this.toggle}>
                     <ModalHeader>My Profile</ModalHeader>
                     <ModalBody>
-                        {userData.images !== undefined  ?
-                        <img className="profileimage" src={userData.images[num].url}></img> :
+                        {userData.image !== undefined  ?
+                        <img className="profileimage" src={userData.image}></img> :
                         null
                         }
-                        <h6>Name: <span>{userData.display_name}</span></h6>
+                        <h6>Name: <span>{userData.name}</span></h6>
                         <h6>Email: <span>{userData.email}</span></h6>
-                        <Button color="danger" onClick={this.toggle}>Back</Button>
+                        
                     </ModalBody>
+                    <Button color="danger" onClick={this.toggle}>Back</Button>
                 </Modal>
             </div>
         )
@@ -72,7 +75,8 @@ class ProfilePage extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        token: state.user.userAccessToken
+        token: state.user.userAccessToken,
+        userData: state.user.userInfo
     }
 }
 

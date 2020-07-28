@@ -17,6 +17,7 @@ import Player from './Player'
 import { setSong, addSong } from '../reduxfiles/song/songActions'
 import Album from './Album'
 
+
 class IndiPlaylist extends Component {
     constructor() {
         super()
@@ -25,7 +26,7 @@ class IndiPlaylist extends Component {
             songs: [],
             isLoading: true,
             url: '',
-            url2: ''
+            msg: null
         }   
     }
 
@@ -36,14 +37,17 @@ class IndiPlaylist extends Component {
         })
     }
 
-    componentDidUpdate(prevState, prevProps) {
-        if(prevProps.url !== this.props.url) {
+    signal = axios.CancelToken.source();
+
+    componentDidMount() {
             const url = this.props.url
             axios.get(url, {
                 headers: {
                     Authorization: `Bearer ${this.props.token}`
                 }
-            })
+            }, {
+                cancelToken: this.signal.token,
+              })
             .then(response => {
                 this.setState({
                     songs: response.data.items,
@@ -57,30 +61,36 @@ class IndiPlaylist extends Component {
                     isLoading: false
                 })
             })
-        }
     }
 
-    seturl = (item) => {
+    componentWillUnmount() {
+        this.signal.cancel('Api is being canceled');
+      }
+
+    seturl(item) {
         if(item.preview_url)
             this.props.setSong(item)
+        else
+            alert('No preview available')
     }
 
     render() {
-
+        console.log(`songs ${this.state.songs.length}`)
         return (
             <div>
                 <Button onClick={this.toggle} color="danger">View Playlist</Button>
                 <Modal isOpen={this.state.modal} toggle={this.toggle} scrollable="true">
                     <ModalHeader className="titleModal"> {this.props.titlePlaylist}</ModalHeader>
                     <ModalBody>
+                        {this.state.songs.length !== 0 ? 
                         <ListGroup>
-                            {   
+                            { 
                                 this.state.isLoading ?
                                 <Spinner size="sm" color="primary" />:
                                 this.state.songs.map(indi => 
                                     <ListGroupItem key={indi.track.id} className="playlistcar" style={{background: '#444'}}>
                                         <Row>
-                                            <Col xs="auto"><img className="imgSize" src={indi.track.album.images[1].url}></img></Col>
+                                            {indi.track.album.images ? <Col xs="auto"><img className="imgSize" src={indi.track.album.images[1].url}></img></Col> : null}
                                             <Col>
                                                 <p className="songContents">Album: {indi.track.album.name}</p>
                                                 <p className="songContents">Song: {indi.track.name}</p>
@@ -97,7 +107,8 @@ class IndiPlaylist extends Component {
                                         </Row>
                                     </ListGroupItem>)
                             }  
-                        </ListGroup> 
+                        </ListGroup> : null 
+                    }
                     </ModalBody>
                     {/* <Player url={this.state.url2} /> */}
                     <Button color="danger" onClick={this.toggle}>Back</Button>

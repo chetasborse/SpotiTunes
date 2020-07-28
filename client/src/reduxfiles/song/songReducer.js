@@ -1,4 +1,4 @@
-const { SET_SONG, ADD_SONG, ARTIST_MODAL } = require("./songType")
+const { SET_SONG, ADD_SONG, ARTIST_MODAL, GET_PLAYLIST, SET_PLAY, ADDED } = require("./songType")
 
 const dummy = {
     preview_url: '',
@@ -10,7 +10,9 @@ const dummy = {
 const initialState = {
     songurl: '',
     songsPreviewed: [],
-    currSong: dummy
+    currSong: dummy,
+    myplaylist: [],
+    playlist: {}
 }
 
 const songReducer = (state = initialState, action) => {
@@ -28,12 +30,26 @@ const songReducer = (state = initialState, action) => {
                 songsPreviewed: [item, ...state.songsPreviewed],
                 currSong: item
             }
-        case ARTIST_MODAL: {
+        case ARTIST_MODAL: 
             return {
                 ...state,
                 artistModal: !state.artistModal
             }
-        }
+        
+        case GET_PLAYLIST:
+            return {
+                ...state,
+                myplaylist: action.payload
+            }
+        case SET_PLAY:
+            return {
+                ...state,
+                playlist: action.payload
+            }
+        case ADDED:
+            return {
+                ...state
+            }
         default:
             return state
     }

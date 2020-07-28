@@ -1,9 +1,10 @@
-const { GET_ACCESS_TOKEN } = require("./userType")
+const { GET_ACCESS_TOKEN, SET_USER } = require("./userType")
 const querystring = require('querystring')
 
 const InitialState = {
     userAccessToken: '',
-    isLoggedIn: false
+    isLoggedIn: false,
+    userInfo: {}
 }
 
 const userReducer = (state = InitialState, action) => {
@@ -13,6 +14,11 @@ const userReducer = (state = InitialState, action) => {
                 ...state,
                 userAccessToken: action.payload,
                 isLoggedIn: true
+            }
+        case SET_USER:
+            return {
+                ...state,
+                userInfo: action.payload
             }
         default:
             return state

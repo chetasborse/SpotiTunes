@@ -12,11 +12,11 @@ import {
     NavLink,
     Container
 } from 'reactstrap';
-import Sample1 from './Sample1';
 import HomePage from './HomePage';
 import ProfilePage from './ProfilePage';
 import MyTunes from './MyTunes';
 import Search from './Search';
+import Logout from './Logout';
 
 
 class AppNavBar extends Component {
@@ -43,24 +43,23 @@ class AppNavBar extends Component {
                 <NavbarToggler onClick={this.toggle} />
                 <Collapse isOpen={this.state.isOpen} navbar>
                     
-                        <Nav className="ml-auto" navbar>
-                            <NavItem>
-                                <NavLink href="https://github.com/chetasborse">GitHub</NavLink>
-                            </NavItem> 
+                        <Nav className="ml-auto" navbar> 
                             <NavItem>
                                 <Link className="linkclass" to="/">Home</Link>
                             </NavItem>
                             <NavItem>
-                                <ProfilePage />
+                                <Link className="linkclass" to="/Search">Search </Link>
                             </NavItem>
+                            
                             <NavItem>
                                 <Link className="linkclass" to="/MyTunes">MyTunes</Link>
                             </NavItem>
+                            
                             <NavItem>
-                                <Link className="linkclass" to="/Search">Search </Link>
+                                <Link className="linkclass" to="/Logout">Logout </Link>
                             </NavItem>
                             <NavItem>
-                                <NavLink href="/">LogOut</NavLink>
+                                <ProfilePage />
                             </NavItem>
                             
                         </Nav> 
@@ -76,6 +75,10 @@ class AppNavBar extends Component {
                                 
                             <Route path="/Search">
                                 <Search />
+                            </Route>
+
+                            <Route path="/Logout">
+                                <Logout />
                             </Route>
                             <Route path="/">
                                 <HomePage />                               
