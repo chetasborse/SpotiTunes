@@ -30,24 +30,6 @@ class ProfilePage extends Component {
         })
     }
 
-    componentDidMount() {
-        // axios.get('https://api.spotify.com/v1/me', {
-        //     headers: {
-        //         Authorization: `Bearer ${this.props.token}`
-        //     }
-        // })
-        // .then(response => {
-        //     this.setState({
-        //         userData: response.data
-        //     })
-        // })
-        // .catch(err => {
-        //     this.setState({
-        //         msg: 'Error in retrieving information'
-        //     })
-        // })
-    }
-
     render() {
         const {userData} = this.props
         const num = 0

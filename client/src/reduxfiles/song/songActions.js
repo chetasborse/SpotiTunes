@@ -51,9 +51,10 @@ export const addtoplaylist = (urlsi) => dispatch => {
         if(token) {
         const config = {
             headers: {
-                Authorization: 'Bearer ' + token, 
+                "Accept": "application/json", 
                 "Content-Type": "application/json", 
-                'Content-Length': '0'    
+                "Content-Length": "0",
+                Authorization: 'Bearer ' + token   
             }
             
         }
@@ -62,16 +63,95 @@ export const addtoplaylist = (urlsi) => dispatch => {
                 Authorization: `Bearer ${token}`,
             }
         }
-        // alert(`token ${token}, url ${urlsi}`)
-        axios.post(urlsi, config)
+        
+        axios.post(urlsi, {} ,config)
             .then(res => {
-                alert('Success')
+                alert('Added the song Successfully')
+                axios.get("https://api.spotify.com/v1/me/playlists", config1)
+                .then(response => {
+                    dispatch({
+                        type: GET_PLAYLIST,
+                        payload: response.data.items
+                    })
+                })
             }
             )
             .catch(err => dispatch({
                 type:ADDED,
                 payload: false
             }))
+    }
+}
+
+export const deleteplaylistitem = (url, uri) => dispatch => {
+    const token = localStorage.getItem('token')
+        
+        if(token) {
+        const config = {
+            headers: {
+                "Content-Type": "application/json", 
+                Authorization: 'Bearer ' + token   
+            },
+            data: {
+                "tracks": [{
+                    "uri": uri
+                }]
+            }   
+        }
+        const config1 = {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            }
+        }
+        axios.delete(url, config)
+            .then(res=> {
+                alert('Song removed from playlist successfully')
+                axios.get("https://api.spotify.com/v1/me/playlists", config1)
+                .then(response => {
+                    dispatch({
+                        type: GET_PLAYLIST,
+                        payload: response.data.items
+                    })
+                })
+            })
+            .catch(err=> {
+                alert('Error')
+            })
+    }
+}
+
+export const createnewplaylist = (name, id) => dispatch => {
+    const token = localStorage.getItem('token')
+    if(token) {
+        const url = `https://api.spotify.com/v1/users/${id}/playlists`
+        const data = {
+            name: name
+        };
+        const config = {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: 'Bearer ' + token,
+            }
+        }
+        const config1 = {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            }
+        }
+        axios.post(url, data ,config)
+            .then(res => {
+                alert("Created playlist successfully")
+                axios.get("https://api.spotify.com/v1/me/playlists", config1)
+                .then(response => {
+                    dispatch({
+                        type: GET_PLAYLIST,
+                        payload: response.data.items
+                    })
+                })
+            })
+            .catch(err => {
+                alert("Error")
+            })
     }
 }
 

@@ -12,7 +12,7 @@ let redirect_uri =
       querystring.stringify({
         response_type: 'code',
         client_id: 'f0bbdb786c6e4f42bdcd954092d0c1cf',
-        scope: 'streaming user-read-private user-read-email user-top-read user-read-playback-state user-read-recently-played playlist-modify-public playlist-modify-private',
+        scope: 'streaming user-read-private user-read-email user-top-read user-read-playback-state user-read-recently-played playlist-modify-public playlist-modify-private playlist-read-private',
         redirect_uri,
         show_dialog: true
       }))

@@ -6,7 +6,7 @@ import {Row, Col, Button, Spinner, Input} from 'reactstrap'
 import Album from './Album';
 import { setSong, addtoplaylist } from '../reduxfiles/song/songActions';
 import Artists from './Artists';
-import IndiPlaylist from './IndiPlaylist';
+import FeaturedPlaylist from './FeaturedPlaylist';
 
 
 class HomePage extends React.Component {
@@ -130,18 +130,18 @@ class HomePage extends React.Component {
 
     const reco = this.state.trackslist.map(individual =>
       <div className="playlistcar" key={individual.id}>
-          {/* <div style={{marginBottom: '10px'}}>
-                    <Row>
-                        <Col xs="9">
-                        <Input type="select" onChange={(e) => this.setState({addplayid:  e.target.value})}>
-                        <option>Add to Playlist</option>
-                        {
-                            myplaylists.map(ind => <option id={ind.id}>{ind.name}</option>)
-                        }
-                        </Input></Col>
-                        <Col xs="2"><Button onClick={() => this.addtoplay(individual.uri)}>Add</Button></Col>
-                    </Row>
-                    </div> */}
+          <div style={{marginBottom: '10px'}}>
+            <Row>
+                <Col xs="9">
+                <Input className="inputplaylist" type="select" onChange={(e) => this.setState({addplayid:  e.target.value})}>
+                <option>Add to Playlist</option>
+                {
+                    myplaylists.map(ind => <option id={ind.id}>{ind.name}</option>)
+                }
+                </Input></Col>
+                <Col xs="2"><Button onClick={() => this.addtoplay(individual.uri)}>Add</Button></Col>
+            </Row>
+            </div>
           <Row>
               <Col>
                   {individual.album.images ? <img style={{height: '200px', marginBottom: '20px'}} src={individual.album.images[1].url}></img> : null}
@@ -201,7 +201,7 @@ class HomePage extends React.Component {
                 <Row>
                 <Col>
                 <p>No. of Tracks: {individual1.tracks.total}</p>
-                <IndiPlaylist url={individual1.tracks.href} titlePlaylist={individual1.name}/>
+                <FeaturedPlaylist url={individual1.tracks.href} titlePlaylist={individual1.name}/>
                 </Col>
                 </Row>
             </div>
@@ -211,7 +211,33 @@ class HomePage extends React.Component {
           <div className="toplookout">
             <div style={{backgroundColor: '#b6e7fd'}}>
             <h2 className="playListHead1">Welcome {this.props.userData.name} :)</h2>
-           
+            <h4 className="playListHead">{this.state.featuredmessage}</h4>
+            {
+                    this.props.token ? 
+                    this.state.featuredloading ?
+                    <Spinner size="sm" color="primary" />:
+                    <div>
+                    <ItemsCarousel
+                        enablePlaceholder
+                        numberOfPlaceholderItems={5}
+                        numberOfCards={3}
+                        gutter={12}
+                        showSlither={true}
+                        firstAndLastGutter={true}
+                        freeScrolling={true}
+                        requestToChangeActive={this.changeActiveItem3}
+                        activeItemIndex={this.state.activeItemIndex3}
+                        activePosition={'center'}
+                        chevronWidth={24}
+                        rightChevron={'>'}
+                        leftChevron={'<'}
+                        outsideChevron={false}
+                    >
+                        {featuredplaylists}
+                    </ItemsCarousel>
+                    </div>
+                    : null
+                }
             <h4 className="playListHead">Recommended Artists</h4>
             {
                     this.props.token ? 
@@ -293,33 +319,7 @@ class HomePage extends React.Component {
                     </div>
                     : null
                 }
-                 <h4 className="playListHead">{this.state.featuredmessage}</h4>
-            {
-                    this.props.token ? 
-                    this.state.featuredloading ?
-                    <Spinner size="sm" color="primary" />:
-                    <div>
-                    <ItemsCarousel
-                        enablePlaceholder
-                        numberOfPlaceholderItems={5}
-                        numberOfCards={3}
-                        gutter={12}
-                        showSlither={true}
-                        firstAndLastGutter={true}
-                        freeScrolling={true}
-                        requestToChangeActive={this.changeActiveItem3}
-                        activeItemIndex={this.state.activeItemIndex3}
-                        activePosition={'center'}
-                        chevronWidth={24}
-                        rightChevron={'>'}
-                        leftChevron={'<'}
-                        outsideChevron={false}
-                    >
-                        {featuredplaylists}
-                    </ItemsCarousel>
-                    </div>
-                    : null
-                }
+               
             </div>
           </div>
       );  

@@ -25,7 +25,8 @@ class Search extends Component {
             artistbool: true,
             albumbool: true,
             trackbool: true,
-            addplayid: ''
+            addplayid: '',
+            onloading: true
         }
     }
 
@@ -36,7 +37,8 @@ class Search extends Component {
             entry: '',
             url: `https://api.spotify.com/v1/search?q=${new_query}&type=artist,album,track`,
             searchbut : true,
-            onarrive: false
+            onarrive: false,
+            
         })
     }
 
@@ -53,7 +55,8 @@ class Search extends Component {
                     artists: response.data.artists ? response.data.artists.items: [],
                     albums: response.data.albums? response.data.albums.items : [], 
                     tracks: response.data.tracks ? response.data.tracks.items : [],
-                    searchbut: false
+                    searchbut: false,
+                    onloading: false
                 })
                 console.log(response.data.artists)
             })
@@ -117,7 +120,7 @@ class Search extends Component {
         
             const reco = this.state.tracks.map(individual =>
                 <div className="playlistcar" key={individual.id}>
-                    {/* <div style={{marginBottom: '10px'}}>
+                    <div style={{marginBottom: '10px'}}>
                     <Row>
                         <Col xs="9">
                         <Input type="select" onChange={(e) => this.setState({addplayid:  e.target.value})}>
@@ -128,7 +131,7 @@ class Search extends Component {
                         </Input></Col>
                         <Col xs="2"><Button onClick={() => this.addtoplay(individual.uri)}>Add</Button></Col>
                     </Row>
-                    </div> */}
+                    </div>
                     <Row>
                         <Col>
                             {individual.album.images[1] ? <img style={{height: '200px', marginBottom: '20px'}} src={individual.album.images[1].url}></img> : null}
@@ -197,7 +200,8 @@ class Search extends Component {
                     <Col sm={4}></Col>
                     <Col>
                         {this.state.artists.length === 0 && this.state.albums.length === 0 && this.state.tracks.length === 0 && this.state.onarrive ? <h3 className="playListHead">Enter your request</h3> : null}
-                        {this.state.artists.length === 0 && this.state.albums.length === 0 && this.state.tracks.length === 0 && !this.state.onarrive ? <h3 className="playListHead">No matches found</h3> : null}
+                        {this.state.artists.length === 0 && this.state.albums.length === 0 && this.state.tracks.length === 0 && !this.state.onarrive && !this.state.onloading ? <h3 className="playListHead">No matches found</h3> : null}
+                        {this.state.artists.length === 0 && this.state.albums.length === 0 && this.state.tracks.length === 0 && !this.state.onarrive && this.state.onloading ? <h3 className="playListHead">Loading</h3> : null}
                     </Col>
                 </Row>
                 {this.state.artistbool && this.state.artists.length !== 0 ?

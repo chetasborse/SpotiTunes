@@ -19,13 +19,11 @@ export const getInfo = () => dispatch =>{
             const con = 0
             dispatch({
                 type: SET_USER,
-                payload: {image: response.data.images[con].url, name: response.data.display_name, email: response.data.email}
+                payload: {image: response.data.images[con].url, name: response.data.display_name, email: response.data.email, id: response.data.id}
             })
         })
         .catch(err => {
-            this.setState({
-                msg: 'Error in retrieving information'
-            })
+            alert('Logout from your account and log in again')
         })
         
 }

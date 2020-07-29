@@ -14,7 +14,7 @@ import {
     Spinner
 } from 'reactstrap'
 import Player from './Player'
-import { setSong, addSong } from '../reduxfiles/song/songActions'
+import { setSong, addSong, deleteplaylistitem } from '../reduxfiles/song/songActions'
 import Album from './Album'
 
 
@@ -26,20 +26,21 @@ class IndiPlaylist extends Component {
             songs: [],
             isLoading: true,
             url: '',
-            msg: null
+            msg: null,
         }   
     }
 
     toggle = () => {
         this.setState({
             modal: !this.state.modal,
-            msg: null
+            msg: null,
         })
     }
 
     signal = axios.CancelToken.source();
 
-    componentDidMount() {
+    componentDidUpdate(prevState, prevProps) {
+            if(this.state.modal && prevProps.url !== this.props.url) {
             const url = this.props.url
             axios.get(url, {
                 headers: {
@@ -61,6 +62,7 @@ class IndiPlaylist extends Component {
                     isLoading: false
                 })
             })
+        }
     }
 
     componentWillUnmount() {
@@ -74,8 +76,12 @@ class IndiPlaylist extends Component {
             alert('No preview available')
     }
 
+    deleteitem = (uri) => {
+        const url = `https://api.spotify.com/v1/playlists/${this.props.id}/tracks`
+        this.props.deleteitem(url, uri)
+    }
+
     render() {
-        console.log(`songs ${this.state.songs.length}`)
         return (
             <div>
                 <Button onClick={this.toggle} color="danger">View Playlist</Button>
@@ -89,6 +95,9 @@ class IndiPlaylist extends Component {
                                 <Spinner size="sm" color="primary" />:
                                 this.state.songs.map(indi => 
                                     <ListGroupItem key={indi.track.id} className="playlistcar" style={{background: '#444'}}>
+                                        <div style={{textAlign: 'right', marginBottom: '5px'}}>
+                                            <Button onClick={() => this.deleteitem(indi.track.uri)}>&times;</Button>
+                                        </div>
                                         <Row>
                                             {indi.track.album.images ? <Col xs="auto"><img className="imgSize" src={indi.track.album.images[1].url}></img></Col> : null}
                                             <Col>
@@ -128,6 +137,7 @@ const mapStateToProps = (state) => {
 const mapDispatchtoProps = (dispatch) => {
     return {
         setSong : (url) => dispatch(setSong(url)),
+        deleteitem: (url, uri) => dispatch(deleteplaylistitem(url, uri))
         // addSong: (item) => dispatch(addSong(item))
     }
 }

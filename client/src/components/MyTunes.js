@@ -5,7 +5,7 @@ import ItemsCarousel from 'react-items-carousel';
 import {Col, Row, Button, Spinner} from 'reactstrap'
 import './MyTunes.css'
 import IndiPlaylist from './IndiPlaylist';
-import { setSong } from '../reduxfiles/song/songActions';
+import { setSong, createnewplaylist, } from '../reduxfiles/song/songActions';
 import Album from './Album';
  
 class MyTunes extends Component {
@@ -75,6 +75,11 @@ class MyTunes extends Component {
             this.props.setSong(item)
         else
             alert('No preview available')
+    }
+
+    createnew = () => {
+        const name = prompt("Enter name of your new playlist :)")
+        this.props.createnewplay(name, this.props.userid)
     }
 
     render() {
@@ -164,7 +169,12 @@ class MyTunes extends Component {
         return(
             <div className="toplookout">
                 <div style={{backgroundColor: '#b6e7fd'}}>
-                <h4 className="playListHead">My PlayLists</h4>
+                    <Row>
+                <Col>
+                <h4 className="playListHead">My PlayLists</h4></Col>
+                <Col style={{textAlign: "right"}}><Button color="success" style={{marginTop: "15px", marginRight: "20px"}} onClick={() => this.createnew()}>Create a new Playlist</Button></Col>
+                </Row>
+    
                 {
                     this.props.token ? 
                     this.state.playlistsloading ?
@@ -253,13 +263,15 @@ const mapStatetoProps = (state) => {
     return {
         token: state.user.userAccessToken,
         songspreviewed: state.song.songsPreviewed,
-        myplaylist: state.song.myplaylist
+        myplaylist: state.song.myplaylist,
+        userid: state.user.userInfo.id
     }
 }
 
 const mapDispatchtoProps = (dispatch) => {
     return {
-        setSong : (url) => dispatch(setSong(url))
+        setSong : (url) => dispatch(setSong(url)),
+        createnewplay: (name, id) => dispatch(createnewplaylist(name, id))
     }
 }
 

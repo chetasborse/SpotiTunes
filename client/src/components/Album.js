@@ -35,14 +35,19 @@ class Album extends Component {
         })
     }
 
+    signal = axios.CancelToken.source();
+
     componentDidUpdate(prevState, prevProps) {
-        if(prevProps.url !== this.props.url) { 
+         if(prevProps.url !== this.props.url && this.state.modal) {
             const url = this.props.url
             axios.get(url, {
                 headers: {
                     Authorization: `Bearer ${this.props.token}`
                 }
-            })
+            }, {
+                cancelToken: this.signal.token,
+              }
+            )
             .then(response => {
                 this.setState({
                     songs: response.data.tracks.items,
@@ -57,9 +62,14 @@ class Album extends Component {
                     msg: '',
                     isLoading: false
                 })
-            })   
-        }
+            }) 
+        }  
+        
     }
+
+    componentWillUnmount() {
+        this.signal.cancel('Api is being canceled');
+      }
 
     seturl = (item) => {
         if(item.preview_url)
