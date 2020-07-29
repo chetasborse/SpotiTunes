@@ -12,9 +12,10 @@ import {
     Row,
     ListGroup,
     ListGroupItem,
-    Spinner
+    Spinner,
+    Input
 } from 'reactstrap'
-import { setSong } from '../reduxfiles/song/songActions'
+import { setSong, addtoplaylist } from '../reduxfiles/song/songActions'
 import Album from './Album'
 
 class Artists extends Component {
@@ -40,7 +41,7 @@ class Artists extends Component {
     signal = axios.CancelToken.source();
 
     componentDidUpdate(prevState, prevProps) { 
-        if(prevProps.url !== this.props.url && this.state.modal) {
+        if(prevProps.artist_id !== this.props.artist_id && this.state.modal) {
             const url = `https://api.spotify.com/v1/artists/${this.props.artist_id}/top-tracks?country=IN`
             axios.get(url, {
                 headers: {
@@ -79,7 +80,17 @@ class Artists extends Component {
             alert('No preview available')
     }
 
+    addtoplay = (songid) => {
+        if(this.state.addplayid !== '' && this.state.addplayid !== 'Add to Playlist') {
+            const playlist_id = this.props.playlist[this.state.addplayid]
+            const urls = `https://api.spotify.com/v1/playlists/${playlist_id}/tracks?uris=${songid}`
+            console.log(urls)
+            this.props.addtoplaylist(urls)
+        }
+    }
+
     render() {
+        const myplaylists= this.props.myplaylist1.map(individual => ({name: individual.name, id: individual.id}))
 
         return (
             <div>
@@ -95,7 +106,18 @@ class Artists extends Component {
                                 <Spinner size="sm" color="primary" />:
                                 this.state.songs.map(indi => 
                                     <ListGroupItem key={indi.id} className="playlistcar" style={{background: '#444'}}>
-
+                                        <div style={{marginBottom: '10px'}}>
+                                        <Row>
+                                            <Col xs="9">
+                                            <Input className="inputplaylist" type="select" onChange={(e) => this.setState({addplayid:  e.target.value})}>
+                                            <option>Add to Playlist</option>
+                                            {
+                                                myplaylists.map(ind => <option id={ind.id}>{ind.name}</option>)
+                                            }
+                                            </Input></Col>
+                                            <Col xs="2"><Button onClick={() => this.addtoplay(indi.uri)}>Add</Button></Col>
+                                        </Row>
+                                        </div>
                                         <Row>
                                             <Col xs="auto"><img className="imgSize" src={indi.album.images[1] ? indi.album.images[1].url : ''}></img></Col>
                                             <Col>
@@ -128,13 +150,16 @@ class Artists extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        token: state.user.userAccessToken
+        token: state.user.userAccessToken,
+        myplaylist1: state.song.myplaylist,
+        playlist: state.song.playlist,
     }
 }
 
 const mapDispatchtoProps = (dispatch) => {
     return {
-        setSong : (url) => dispatch(setSong(url))
+        setSong : (url) => dispatch(setSong(url)),
+        addtoplaylist: (url) => dispatch(addtoplaylist(url))
     }
 }
 

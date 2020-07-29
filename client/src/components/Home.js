@@ -26,9 +26,11 @@ class Home extends Component{
   componentDidMount(props) {
     let parsed = queryString.parse(window.location.search)
     let access_token = parsed.access_token
+    let refresh_token = parsed.refresh_token
 
       if(access_token) {
         localStorage.setItem('token', access_token)
+        localStorage.setItem('refresh_token', refresh_token)
         this.props.getplaylist()
         this.props.getInfo()
         this.setState({

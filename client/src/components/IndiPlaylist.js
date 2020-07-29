@@ -116,7 +116,7 @@ class IndiPlaylist extends Component {
                                         </Row>
                                     </ListGroupItem>)
                             }  
-                        </ListGroup> : null 
+                        </ListGroup> : <h3 className="songscontent">Add Songs from search</h3> 
                     }
                     </ModalBody>
                     {/* <Player url={this.state.url2} /> */}

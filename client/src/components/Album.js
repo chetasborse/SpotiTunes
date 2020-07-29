@@ -11,9 +11,10 @@ import {
     ListGroupItem,
     Col,
     Row,
-    Spinner
+    Spinner,
+    Input
 } from 'reactstrap'
-import { setSong } from '../reduxfiles/song/songActions'
+import { setSong, addtoplaylist } from '../reduxfiles/song/songActions'
 
 class Album extends Component {
     constructor() {
@@ -78,7 +79,17 @@ class Album extends Component {
             alert('No preview available')
     }
 
+    addtoplay = (songid) => {
+        if(this.state.addplayid !== '' && this.state.addplayid !== 'Add to Playlist') {
+            const playlist_id = this.props.playlist[this.state.addplayid]
+            const urls = `https://api.spotify.com/v1/playlists/${playlist_id}/tracks?uris=${songid}`
+            console.log(urls)
+            this.props.addtoplaylist(urls)
+        }
+    }
+
     render() {
+        const myplaylists= this.props.myplaylist1.map(individual => ({name: individual.name, id: individual.id}))
 
         return (
             <div>
@@ -93,6 +104,18 @@ class Album extends Component {
                                 <Spinner size="sm" color="primary" />:
                                 this.state.songs.map(indi => 
                                     <ListGroupItem key={indi.id} className="playlistcar" style={{background: '#444'}}>
+                                        <div style={{marginBottom: '10px'}}>
+                                        <Row>
+                                            <Col xs="7">
+                                            <Input className="inputplaylist" type="select" onChange={(e) => this.setState({addplayid:  e.target.value})}>
+                                            <option>Add to Playlist</option>
+                                            {
+                                                myplaylists.map(ind => <option id={ind.id}>{ind.name}</option>)
+                                            }
+                                            </Input></Col>
+                                            <Col xs="2"><Button onClick={() => this.addtoplay(indi.uri)}>Add</Button></Col>
+                                        </Row>
+                                        </div>
                                         <Row>
                                             <Col>
                                                 {/* { this.state.albumid === individual.id && this.state.albumid1 === indi.track.album.id ? <Sample2 url={this.state.albumurl} token={this.state.userAccessToken}></Sample2> : null} */}
@@ -124,13 +147,16 @@ class Album extends Component {
 const mapStateToProps = (state) => {
     return {
         token: state.user.userAccessToken,
-        url2: state.song.songurl
+        url2: state.song.songurl,
+        myplaylist1: state.song.myplaylist,
+        playlist: state.song.playlist,
     }
 }
 
 const mapDispatchtoProps = (dispatch) => {
     return {
-        setSong : (url) => dispatch(setSong(url))
+        setSong : (url) => dispatch(setSong(url)),
+        addtoplaylist: (url) => dispatch(addtoplaylist(url))
     }
 }
 

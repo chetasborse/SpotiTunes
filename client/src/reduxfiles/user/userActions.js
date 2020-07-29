@@ -23,7 +23,27 @@ export const getInfo = () => dispatch =>{
             })
         })
         .catch(err => {
-            alert('Logout from your account and log in again')
+            let authoptions = {
+                url: 'https://accounts.spotify.com/api/token',
+                form: {
+                    grant_type: 'refresh_token',
+                    refresh_token: localStorage.getItem('refresh_token')
+                },
+                headers: {
+                    'Authorization': 'Basic ' + (new Buffer(
+                      'f0bbdb786c6e4f42bdcd954092d0c1cf' + ':' + 'b25757a750f848baaba1a34d033c06c3'
+                    ).toString('base64'))
+                },
+                json: true
+            }
+            axios.post(authoptions, function(error, response, body) {
+                var access_token = body.access_token
+                localStorage.removeItem('token')
+                localStorage.removeItem('refresh_token')
+                localStorage.addItem('token', access_token)
+                localStorage.addItem('refresh_token', body.refresh_token)
+                window.location.reload()               
+              })
         })
         
 }
