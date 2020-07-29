@@ -1,37 +1,20 @@
-# OAuth bridge template
+# SpotiTunes
 
-This service logs in to Spotify and redirects the user to a given frontend application with a valid access_token as a parameter in the url.
+A web application which uses APIs from Spotify to display user profile, provide user with music recommendations based on their preferences. You can stream previews, create playlists, add songs, etc.
 
-## Development mode
+## To Run: 
 
-In development mode, it assumes you are running the frontend on localhost:3000, but the server itself will be running on localhost:8888.
+1. Clone the project
+2. In the client directory run ```npm install```
+3. Generate client code to access the Spotify APIs here [https://developer.spotify.com/dashboard/applications](https://developer.spotify.com/dashboard/applications)
+4. Create an app, copy the client-id and client secret id and paste it in routes/login.js:
+5. Paste 'http://localhost:8888/callback' under 'Redirect URIs' in your created app's Edit Settings.
+6. To run the application run ```npm run dev``` in parent directory
 
-In order to start developing, register a Spotify Application here:
-https://developer.spotify.com/my-applications
+## Technologies used:
 
-On that page, add http://localhost:8888 as a callback url (don't forget to hit save at the bottom of the page)
+React in Node.js environment using Express.js framework
 
-Write the below commands in your terminal (replacing XXXX AND YYYY with your acutal client id and secret from the page where you registered your application)
+## Documentation:
 
-```
-export SPOTIFY_CLIENT_ID=XXXX
-export SPOTIFY_CLIENT_SECRET=YYYY
-npm start
-```
-
-Then go to http://localhost:8888/login in your browser. This will initiate the login flow and finally redirect to http://localhost:3000?access_token=ZZZZZ where ZZZZZ is a valid access token that you can use to do operations in the Spotify API.
-
-## Deploying to production
-
-This template is indended to be deployed on Heroku. After installing the heroku CLI tools you can run the below commands in the same directory as server.js(replacing abc123, cba456, mybackend and myfrontend with your actual stuff - the below example assume that you already have your frontend running on http://myfrontend.herokuapp.com.
-
-```
-heroku create mybackend
-heroku config:set SPOTIFY_CLIENT_ID=abc123
-heroku config:set SPOTIFY_CLIENT_SECRET=cba456
-heroku config:set REDIRECT_URI=https://mybackend.herokuapp.com/callback
-heroku config:set FRONTEND_URI=https://myfrontend.herokuapp.com
-git push heroku master
-```
-
-You should now be able to go to http://mybackend.herokuapp.com/login and it will eventually redirect to http://myfrontend.herokuapp.com?access_token=ZZZZZwhere ZZZZZ is a valid access token that you can use to do operations in the Spotify API.
+For documentation on Spotify APIs visit [Spotify Documentation](https://developer.spotify.com/documentation/web-api/)
