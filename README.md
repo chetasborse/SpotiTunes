@@ -2,6 +2,12 @@
 
 A web application which uses APIs from Spotify to display user profile, provide user with music recommendations based on their preferences. You can stream previews, create playlists, add songs, etc.
 
+
+## Demo
+
+![Farmers Market Finder Demo](gif/SpotitunesD.gif)
+
+
 ## To Run: 
 
 1. Clone the project
