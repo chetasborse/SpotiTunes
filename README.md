@@ -5,7 +5,7 @@ A web application which uses APIs from Spotify to display user profile, provide 
 
 ## Demo
 
-![Farmers Market Finder Demo](gif/SpotitunesD.gif)
+![Farmers Market Finder Demo](gif/Spotitune.gif)
 
 
 ## To Run: 
